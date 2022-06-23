@@ -7,11 +7,13 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:news_list/utils/widget_ext.dart';
 import 'package:news_list/news_detail.dart';
 
 class NewsListPage extends StatefulWidget {
   static const route = "/news_page";
+
   const NewsListPage({Key? key, required this.title}) : super(key: key);
   final String title;
 
@@ -48,15 +50,13 @@ class _NewsListPageState extends State<NewsListPage> {
     this.totalNum = tmpValue["data"]["total"];
 
     setState(() {
-      if(this.page == 1) {
+      if (this.page == 1) {
         this.listData.clear();
         this.listData = tmpValue["data"]["records"];
-
-      }else {
+      } else {
         List tmpList = List.from(tmpValue["data"]["records"]);
         this.listData.addAll(tmpList);
       }
-
     });
     httpClient.close();
   }
@@ -72,7 +72,7 @@ class _NewsListPageState extends State<NewsListPage> {
         print("add");
         if (this.totalNum >= this.listData.length) {
           print("do");
-          this.page ++;
+          this.page++;
           _getListData();
         }
       }
@@ -81,7 +81,6 @@ class _NewsListPageState extends State<NewsListPage> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -94,18 +93,18 @@ class _NewsListPageState extends State<NewsListPage> {
     return Row(
       children: [
         TextButton(
-                child: Text(
-                  '国内新闻',
-                  style: TextStyle(
-                      fontSize: 15,
-                      color: listType.compareTo('news.center.domestic')==0
-                          ? selecttColor
-                          : defaultColor),
-                ),
-                onPressed: () {
-                  listType = 'news.center.domestic';
-                  _getListData();
-                }).setFlex(),
+            child: Text(
+              '国内新闻',
+              style: TextStyle(
+                  fontSize: 15,
+                  color: listType.compareTo('news.center.domestic') == 0
+                      ? selecttColor
+                      : defaultColor),
+            ),
+            onPressed: () {
+              listType = 'news.center.domestic';
+              _getListData();
+            }).setFlex(),
         Container().withSize(
             width: 0.1,
             height: 30,
@@ -116,16 +115,16 @@ class _NewsListPageState extends State<NewsListPage> {
                         width: 1,
                         style: BorderStyle.solid)))),
         TextButton(
-                child: Text('国际新闻',
-                    style: TextStyle(
-                        fontSize: 15,
-                        color: listType.compareTo('news.center.world')==0
-                            ? selecttColor
-                            : defaultColor)),
-                onPressed: () {
-                  listType = 'news.center.world';
-                  _getListData();
-                }).setFlex()
+            child: Text('国际新闻',
+                style: TextStyle(
+                    fontSize: 15,
+                    color: listType.compareTo('news.center.world') == 0
+                        ? selecttColor
+                        : defaultColor)),
+            onPressed: () {
+              listType = 'news.center.world';
+              _getListData();
+            }).setFlex()
       ],
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       mainAxisSize: MainAxisSize.max,
@@ -140,47 +139,57 @@ class _NewsListPageState extends State<NewsListPage> {
   }
 
   Widget renderItem(BuildContext context, int index, Map data) {
+    bool select = false;
     return Container(
-        child: Column(
-          children: [
-            SizedBox.fromSize(size: Size(10, 10)),
-            Row(
-              children: [
-                SizedBox.fromSize(size: Size(10, 10)),
-                Image(image: NetworkImage(data["imageUrl"]))
-                    .withSize(width: 80, height: 80),
-                SizedBox.fromSize(size: Size(10, 10)),
-                Flexible(
-                  child: Column(
-                    children: [
-                      Text(
-                        data['title'],
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15,
-                            color: defaultColor),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      SizedBox.fromSize(size: Size(5, 5)),
-                      Text(
-                        data['summary'],
-                        style: TextStyle(fontSize: 12, color: Color(0xFF525A60)),
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis,
-                      )
-                    ],
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                  ),
+      child: Column(
+        children: [
+          SizedBox.fromSize(size: Size(10, 10)),
+          Row(
+            children: [
+              SizedBox.fromSize(size: Size(10, 10)),
+              Image(image: NetworkImage(data["imageUrl"]))
+                  .withSize(width: 80, height: 80),
+              SizedBox.fromSize(size: Size(10, 10)),
+              Flexible(
+                child: Column(
+                  children: [
+                    Text(
+                      data['title'],
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                          color: defaultColor),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    SizedBox.fromSize(size: Size(5, 5)),
+                    Text(
+                      data['summary'],
+                      style: TextStyle(fontSize: 12, color: Color(0xFF525A60)),
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                    )
+                  ],
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                 ),
-                SizedBox.fromSize(size: Size(10, 10)),
-              ],
-            ),
-            SizedBox.fromSize(size: Size(10, 10)),
-          ],
-        ));
+              ),
+              SizedBox.fromSize(size: Size(10, 10)),
+            ],
+          ),
+          SizedBox.fromSize(size: Size(10, 10)),
+        ],
+      ),
+      // color: select == false ? Color(0xFFFFFFFF) : Color(0x66666666),
+    );
   }
+
+  // Navigator.push(
+  // context,
+  // // NewsDetailPage.route,
+  // MaterialPageRoute(
+  // builder: (context) =>
+  // NewsDetailPage(title: '新闻详情', id: data["id"]));
 
   Widget _listView() {
     return ListView.separated(
@@ -195,18 +204,54 @@ class _NewsListPageState extends State<NewsListPage> {
         itemCount: listData.length + 1); //safeArea
   }
 
+  //     .setTouchEvent(onTap: () {
+  // Navigator.push(
+  // context,
+  // MaterialPageRoute(
+  // builder: (context) {
+  // return NewsDetailPage(title: '新闻详情', id: data["id"]);
+  // })
+  //
+  // );
+  // })
   Widget _listItemBuilder(context, int index) {
     if ((index) < listData.length) {
       Map data = listData[index];
-      return renderItem(context, index, listData[index]).setTouchEvent(onTap: (){
-        // Navigator.pushNamed(context, NewsDetailPage.route);
-        Navigator.push(
-          context,
-            // NewsDetailPage.route,
-          MaterialPageRoute(
-              builder: (context) => NewsDetailPage(title: '新闻详情',id: data["id"])),
-        );
-      });
+      Widget item = renderItem(context, index, listData[index]);
+
+      return Ink(
+        color: Colors.white,
+        child: InkWell(
+          child: item,
+          onTap: () {
+            Navigator.push(
+                context,
+                PageRouteBuilder(
+                    pageBuilder: (BuildContext context, Animation animation,
+                        Animation secondaryAnimation) {
+                      return NewsDetailPage(title: '新闻详情', id: data["id"]);
+                    },
+                    transitionDuration: Duration(milliseconds: 3000),
+                    transitionsBuilder: (BuildContext context,
+                        Animation<double> animation,
+                        Animation<double> secondaryAnimation,
+                        Widget child) {
+                      return SlideTransition(
+                        position: Tween(begin: Offset(1, 0), end: Offset(0, 0))
+                            .animate(animation),
+                        child: child,
+                        // textDirection: TextDirection.rtl,
+                      );
+
+                    })
+                // MaterialPageRoute(
+                //     builder: (context) {
+                //       return NewsDetailPage(title: '新闻详情', id: data["id"]);
+                //     })
+                );
+          },
+        ),
+      );
     } else {
       //bottom padding
       return SizedBox(height: safeAreaBottom());

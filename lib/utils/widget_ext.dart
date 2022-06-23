@@ -5,12 +5,15 @@ import 'package:flutter/material.dart';
 /// @Author Johnson
 /// @Date 2022/6/11 5:37 下午
 extension WidgetExt on Widget {
-  GestureDetector setTouchEvent({Key? key, Function? onTap}) {
+  GestureDetector setTouchEvent(
+      {Key? key, Function? onTap, Function? onTapUp, Function? onTapDown}) {
     return GestureDetector(
       key: key,
       behavior: HitTestBehavior.opaque,
       child: this,
       onTap: () => onTap?.call(),
+      onTapUp: (_) => onTapUp?.call(),
+      onTapDown: (_) => onTapDown?.call(),
     );
   }
 
